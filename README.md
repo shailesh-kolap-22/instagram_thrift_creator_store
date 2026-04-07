@@ -1,17 +1,12 @@
-# Instagram Thrift and Handmade Store -- Database Design
+# Instagram Thrift Creator Store - Database Design
 
-Database design (ER diagram) for a small Instagram-based business that sells thrifted fashion items and handmade products.
+Database design (ER diagram) for a small Instagram-based business that sells thrifted fashion items and handmade products, managing customers, orders, payments, and shipping.
 
-## Business Context
-
-A small creator sells products through Instagram DMs and WhatsApp. Products fall into two categories:
-
-- **Thrifted** -- second-hand, unique, one-of-a-kind items. Each has a condition (like_new, good, fair, worn). Once sold, it is gone.
-- **Handmade** -- created by the owner in batches. Multiple units can exist and stock can be replenished.
+For the full problem statement, see [PROBLEM.md](PROBLEM.md).
 
 ## ER Diagram
 
-![ER Diagram](./ER_Diagram.svg)
+![ER Diagram](instagram_thrift_creator_store_er_diagram.svg)
 
 ## Entities
 
@@ -24,20 +19,23 @@ A small creator sells products through Instagram DMs and WhatsApp. Products fall
 | **payment** | Payment method, status, amount, and transaction reference for an order |
 | **shipment** | Shipping address, method, status, and tracking for an order |
 
-## Relationships
-
-| Relationship | Cardinality |
-|---|---|
-| customer → order_record | One-to-Many |
-| order_record → order_item | One-to-Many |
-| product → order_item | One-to-Many |
-| order_record → payment | One-to-One |
-| order_record → shipment | One-to-One |
-
 ## Key Design Decisions
 
-- Single `product` table with a `product_type` column instead of separate tables for thrifted and handmade.
-- `condition` is nullable -- only relevant for thrifted items, left NULL for handmade.
-- `unit_price` in `order_item` snapshots the price at purchase time so historical orders stay accurate.
-- Shipping address stored on `shipment`, not just on `customer`, because delivery address can differ per order.
-- `order_record` used instead of `order` to avoid SQL reserved keyword conflicts.
+- **Single product table** with a `product_type` column instead of separate tables for thrifted and handmade items.
+- **Condition is nullable** -- only relevant for thrifted items, left NULL for handmade.
+- **Unit price in order_item** snapshots the price at purchase time so historical orders stay accurate.
+- **Shipping address stored on shipment**, not just on customer, because delivery address can differ per order.
+- **order_record used instead of order** to avoid SQL reserved keyword conflicts.
+- **order_item as junction table** properly resolves the many-to-many relationship between orders and products.
+
+## Relationships
+
+- One customer can place many orders.
+- One order can contain many products (via order_item).
+- One product can appear in many orders (via order_item).
+- One order has one payment.
+- One order has one shipment.
+
+## Tools Used
+
+- [Mermaid](https://mermaid.js.org/) for ER diagram generation
