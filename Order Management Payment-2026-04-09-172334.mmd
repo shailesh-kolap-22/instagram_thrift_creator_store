@@ -1,0 +1,77 @@
+erDiagram
+    customer {
+        INT customer_id PK
+        VARCHAR name
+        VARCHAR phone
+        VARCHAR email
+        VARCHAR instagram_handle
+        TEXT address
+        VARCHAR city
+        VARCHAR pincode
+        TIMESTAMP created_at
+    }
+
+    product {
+        INT product_id PK
+        VARCHAR name
+        TEXT description
+        VARCHAR product_type
+        VARCHAR category
+        DECIMAL price
+        VARCHAR size
+        VARCHAR color
+        VARCHAR condition
+        INT quantity_available
+        BOOLEAN is_unique
+        VARCHAR image_url
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    order_record {
+        INT order_id PK
+        INT customer_id FK
+        TIMESTAMP order_date
+        DECIMAL total_amount
+        VARCHAR order_status
+        TEXT notes
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    order_item {
+        INT order_item_id PK
+        INT order_id FK
+        INT product_id FK
+        INT quantity
+        DECIMAL unit_price
+    }
+
+    payment {
+        INT payment_id PK
+        INT order_id FK
+        VARCHAR payment_method
+        VARCHAR payment_status
+        DECIMAL amount_paid
+        TIMESTAMP payment_date
+        VARCHAR transaction_reference
+    }
+
+    shipment {
+        INT shipment_id PK
+        INT order_id FK
+        TEXT shipping_address
+        VARCHAR city
+        VARCHAR pincode
+        VARCHAR shipping_method
+        VARCHAR shipping_status
+        VARCHAR tracking_number
+        TIMESTAMP shipped_date
+        TIMESTAMP delivered_date
+    }
+
+    customer ||--o{ order_record : " "
+    order_record ||--|{ order_item : " "
+    product ||--o{ order_item : " "
+    order_record ||--|| payment : " "
+    order_record ||--|| shipment : " "
